@@ -1,0 +1,60 @@
+﻿@model IEnumerable<EventEase.Models.Venue>
+
+@{
+    ViewData["Title"] = "Venues";
+}
+
+<h2>Venues</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ Add New Venue</a>
+</p>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@item.ImageUrl"
+                         class="card-img-top"
+                         alt="@item.VenueName"
+                         style="height: 200px; object-fit: cover;"
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x200?text=No+Image';" />
+                }
+                else
+                {
+                    <img src="https://placehold.co/400x200?text=No+Image"
+                         class="card-img-top"
+                         alt="No image"
+                         style="height: 200px; object-fit: cover;" />
+                }
+
+                <div class="card-body">
+                    <h5 class="card-title">@item.VenueName</h5>
+                    <p class="card-text text-muted mb-1">
+                        <i>📍</i> @item.Location
+                    </p>
+                    <p class="card-text mb-1">
+                        <strong>Capacity:</strong> @item.Capacity
+                    </p>
+                    <span class="badge @(item.IsAvailable ? "bg-success" : "bg-secondary")">
+                        @(item.IsAvailable ? "Available" : "Unavailable")
+                    </span>
+                </div>
+
+                <div class="card-footer d-flex gap-2">
+                    <a asp-action="Details" asp-route-id="@item.VenueId" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.VenueId" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.VenueId" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

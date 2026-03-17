@@ -1,0 +1,103 @@
+﻿@model EventEase.Models.Venue
+
+@{
+    ViewData["Title"] = "Edit Venue";
+}
+
+<h2>Edit Venue</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="VenueId" />
+
+            <div class="mb-3">
+                <label asp-for="VenueName" class="form-label"></label>
+                <input asp-for="VenueName" class="form-control" />
+                <span asp-validation-for="VenueName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Location" class="form-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Capacity" class="form-label"></label>
+                <input asp-for="Capacity" class="form-control" type="number" />
+                <span asp-validation-for="Capacity" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                <input asp-for="ImageUrl"
+                       class="form-control"
+                       id="imageUrlInput"
+                       placeholder="Paste any image URL here..."
+                       oninput="previewImage(this.value)" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <!-- Live image preview -->
+            <div class="mb-3" id="previewContainer" style="display:none;">
+                <label class="form-label">Current Image</label>
+                <img id="imagePreview"
+                     src=""
+                     alt="Image preview"
+                     class="img-fluid rounded"
+                     style="max-height: 220px; width: 100%; object-fit: cover;"
+                     onerror="this.onerror=null; document.getElementById('previewError').style.display='block'; this.style.display='none';" />
+                <div id="previewError" class="alert alert-warning mt-2" style="display:none;">
+                    ⚠️ Could not load image. Check the URL is correct and publicly accessible.
+                </div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="IsAvailable" class="form-check-input" type="checkbox" />
+                <label asp-for="IsAvailable" class="form-check-label">Available</label>
+            </div>
+
+            <button type="submit" class="btn btn-warning">Update Venue</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+    </div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function previewImage(url) {
+            const container = document.getElementById('previewContainer');
+            const img = document.getElementById('imagePreview');
+            const err = document.getElementById('previewError');
+
+            if (!url || url.trim() === '') {
+                container.style.display = 'none';
+                return;
+            }
+
+            err.style.display = 'none';
+            img.style.display = 'block';
+            img.src = url;
+            container.style.display = 'block';
+        }
+
+        function useUrl(url) {
+            const input = document.getElementById('imageUrlInput');
+            input.value = url;
+            previewImage(url);
+        }
+
+        // Show existing image on load
+        window.addEventListener('load', function () {
+            const input = document.getElementById('imageUrlInput');
+            if (input.value) previewImage(input.value);
+        });
+    </script>
+}

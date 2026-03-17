@@ -1,0 +1,56 @@
+﻿@model EventEase.Models.Event
+
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<h2>Event Details</h2>
+
+<img src="@Model.ImageUrl" alt="@Model.EventName" style="width:300px; height:200px; object-fit:cover;" />
+
+<dl class="row" style="margin-top:15px;">
+    <dt class="col-sm-3">Event Name</dt>
+    <dd class="col-sm-9">@Model.EventName</dd>
+
+    <dt class="col-sm-3">Start Date</dt>
+    <dd class="col-sm-9">@Model.StartDate.ToString("dd MMM yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3">End Date</dt>
+    <dd class="col-sm-9">@Model.EndDate.ToString("dd MMM yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+</dl>
+
+@if (Model.Bookings != null && Model.Bookings.Any())
+{
+    <h4>Booked Venues</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Venue</th>
+                <th>Location</th>
+                <th>Booking Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model.Bookings)
+            {
+                <tr>
+                    <td>
+                        <img src="@booking.Venue?.ImageUrl" alt="@booking.Venue?.VenueName" style="width:80px; height:60px; object-fit:cover;" />
+                    </td>
+                    <td>@booking.Venue?.VenueName</td>
+                    <td>@booking.Venue?.Location</td>
+                    <td>@booking.BookingDate.ToString("dd MMM yyyy")</td>
+                    <td>@booking.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-action="Edit" asp-route-id="@Model.EventId">Edit</a> |
+<a asp-action="Index">Back to List</a>

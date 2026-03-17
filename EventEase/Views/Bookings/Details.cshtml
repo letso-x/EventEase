@@ -1,0 +1,82 @@
+﻿@model EventEase.Models.Booking
+
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<h2>Booking #@Model.BookingId</h2>
+<hr />
+
+<div class="row g-4">
+
+    <!-- Venue card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <img src="@(string.IsNullOrEmpty(Model.Venue?.ImageUrl) ? "https://placehold.co/600x300?text=No+Venue+Image" : Model.Venue.ImageUrl)"
+                 alt="@Model.Venue?.VenueName"
+                 class="card-img-top"
+                 style="height: 200px; object-fit: cover;"
+                 onerror="this.onerror=null;this.src='https://placehold.co/600x300?text=No+Venue+Image';" />
+            <div class="card-body">
+                <h5 class="card-title">📍 Venue</h5>
+                <p class="card-text mb-1"><strong>@Model.Venue?.VenueName</strong></p>
+                <p class="card-text text-muted small">@Model.Venue?.Location</p>
+                <p class="card-text small">Capacity: @Model.Venue?.Capacity</p>
+                <span class="badge @(Model.Venue?.IsAvailable == true ? "bg-success" : "bg-secondary")">
+                    @(Model.Venue?.IsAvailable == true ? "Available" : "Unavailable")
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <img src="@(string.IsNullOrEmpty(Model.Event?.ImageUrl) ? "https://placehold.co/600x300?text=No+Event+Image" : Model.Event.ImageUrl)"
+                 alt="@Model.Event?.EventName"
+                 class="card-img-top"
+                 style="height: 200px; object-fit: cover;"
+                 onerror="this.onerror=null;this.src='https://placehold.co/600x300?text=No+Event+Image';" />
+            <div class="card-body">
+                <h5 class="card-title">🎉 Event</h5>
+                <p class="card-text mb-1"><strong>@Model.Event?.EventName</strong></p>
+                <p class="card-text text-muted small">
+                    @Model.Event?.StartDate.ToString("dd MMM yyyy HH:mm") —
+                    @Model.Event?.EndDate.ToString("dd MMM yyyy HH:mm")
+                </p>
+                <p class="card-text small">@Model.Event?.Description</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking info -->
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">📋 Booking Info</h5>
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Booking ID</dt>
+                    <dd class="col-sm-9">#@Model.BookingId</dd>
+
+                    <dt class="col-sm-3">Booking Date</dt>
+                    <dd class="col-sm-9">@Model.BookingDate.ToString("dd MMM yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge @(Model.Status == "Confirmed" ? "bg-success" : Model.Status == "Pending" ? "bg-warning text-dark" : "bg-secondary")">
+                            @Model.Status
+                        </span>
+                    </dd>
+
+                    <dt class="col-sm-3">Notes</dt>
+                    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Notes) ? "—" : Model.Notes)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.BookingId" class="btn btn-warning">Edit Booking</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to Bookings</a>
+</div>

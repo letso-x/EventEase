@@ -1,0 +1,69 @@
+﻿@model EventEase.Models.Booking
+
+@{
+    ViewData["Title"] = "Create Booking";
+    var venueImages = ViewBag.VenueImages as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<h2>Create Booking</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="VenueId">Venue</label>
+        <select asp-for="VenueId" class="form-control" asp-items="ViewBag.VenueId" id="venueSelect" onchange="updateVenueImage(this.value)">
+            <option value="">-- Select Venue --</option>
+        </select>
+    </div>
+
+    <div id="venueImageBox" style="margin-top:10px; display:none;">
+        <img id="venueImg" src="" style="width:200px; height:140px; object-fit:cover;" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EventId">Event</label>
+        <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId">
+            <option value="">-- Select Event --</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="BookingDate"></label>
+        <input asp-for="BookingDate" class="form-control" type="datetime-local" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" class="form-control">
+            <option>Confirmed</option>
+            <option>Pending</option>
+            <option>Cancelled</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <input type="submit" value="Create" class="btn btn-primary" />
+    <a asp-action="Index">Back to List</a>
+</form>
+
+@section Scripts {
+    <script>
+        var venueImages = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(venueImages));
+
+        function updateVenueImage(venueId) {
+            var box = document.getElementById('venueImageBox');
+            var img = document.getElementById('venueImg');
+            if (venueId && venueImages[venueId]) {
+                img.src = venueImages[venueId];
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        window.onload = function () {
+            var select = document.getElementById('venueSelect');
+            if (select.value) updateVenueImage(select.value);
+        }
+    </script>
+}

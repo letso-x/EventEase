@@ -1,0 +1,103 @@
+﻿@model EventEase.Models.Booking
+
+@{
+    ViewData["Title"] = "Edit Booking";
+    var venueImages = ViewBag.VenueImages as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<h2>Edit Booking #@Model.BookingId</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="BookingId" />
+
+            <div class="mb-3">
+                <label asp-for="VenueId" class="form-label">Venue</label>
+                <select asp-for="VenueId" class="form-select" asp-items="ViewBag.VenueId"
+                        id="venueSelect" onchange="updateVenuePreview(this.value)">
+                    <option value="">-- Select a Venue --</option>
+                </select>
+                <span asp-validation-for="VenueId" class="text-danger"></span>
+            </div>
+
+            <!-- Venue image preview -->
+            <div id="venuePreviewContainer" class="mb-3" style="display:none;">
+                <img id="venuePreviewImg"
+                     src=""
+                     alt="Selected venue"
+                     class="img-fluid rounded"
+                     style="height: 160px; width: 100%; object-fit: cover;"
+                     onerror="this.onerror=null;this.src='https://placehold.co/400x160?text=No+Image';" />
+                <p id="venuePreviewName" class="text-muted small mt-1"></p>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EventId" class="form-label">Event</label>
+                <select asp-for="EventId" class="form-select" asp-items="ViewBag.EventId">
+                    <option value="">-- Select an Event --</option>
+                </select>
+                <span asp-validation-for="EventId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="BookingDate" class="form-label">Booking Date</label>
+                <input asp-for="BookingDate" class="form-control" type="datetime-local" />
+                <span asp-validation-for="BookingDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-select">
+                    <option>Confirmed</option>
+                    <option>Pending</option>
+                    <option>Cancelled</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label">Notes</label>
+                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-warning">Update Booking</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const venueImages = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(venueImages));
+
+        function updateVenuePreview(venueId) {
+            const container = document.getElementById('venuePreviewContainer');
+            const img = document.getElementById('venuePreviewImg');
+            const name = document.getElementById('venuePreviewName');
+            const select = document.getElementById('venueSelect');
+
+            if (!venueId) {
+                container.style.display = 'none';
+                return;
+            }
+
+            const imageUrl = venueImages[venueId] || 'https://placehold.co/400x160?text=No+Image';
+            const venueName = select.options[select.selectedIndex].text;
+
+            img.src = imageUrl;
+            name.textContent = '📍 ' + venueName;
+            container.style.display = 'block';
+        }
+
+        // Show existing venue image on load
+        window.addEventListener('load', function () {
+            const select = document.getElementById('venueSelect');
+            if (select.value) updateVenuePreview(select.value);
+        });
+    </script>
+}

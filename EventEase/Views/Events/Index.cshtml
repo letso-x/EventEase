@@ -1,0 +1,39 @@
+﻿@model IEnumerable<EventEase.Models.Event>
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+<h2>Events</h2>
+
+<p><a asp-action="Create">Create New</a></p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Event Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.ImageUrl" alt="@item.EventName" style="width:100px; height:70px; object-fit:cover;" />
+                </td>
+                <td>@item.EventName</td>
+                <td>@item.StartDate.ToString("dd MMM yyyy")</td>
+                <td>@item.EndDate.ToString("dd MMM yyyy")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.EventId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.EventId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
