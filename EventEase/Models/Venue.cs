@@ -5,11 +5,15 @@ namespace EventEase.Models
     public class Venue
     {
         public int VenueId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Venue name is required.")]
+        [Display(Name = "Venue Name")]
         public string? VenueName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Location name is required.")]
+        [Display(Name = "Location")]
         public string? Location { get; set; }
-        [Required]
+       
+        [Required(ErrorMessage = "Please indicate how much capacity this venue can accomodate.")]
+        [Display(Name = "Capacity")]
         public int? Capacity { get; set; }
         [Required]
         public string? ImageUrl { get; set; }
