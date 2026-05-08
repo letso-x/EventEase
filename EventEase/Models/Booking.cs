@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using EventEase.Models.Validation;
 
 namespace EventEase.Models
 {
@@ -12,6 +13,7 @@ namespace EventEase.Models
         public int EventId { get; set; }
         [Required(ErrorMessage = "Please select a booking date")]
         [Display(Name ="Booking Date")]
+        [UniqueVenueBooking(ErrorMessage = "This venue is already booked for the selected date.")]
         public DateTime BookingDate { get; set; }
         public string? Notes { get; set; }
         public string? Status { get; set; }
