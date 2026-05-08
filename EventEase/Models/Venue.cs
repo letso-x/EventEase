@@ -15,11 +15,11 @@ namespace EventEase.Models
         [Required(ErrorMessage = "Please indicate how much capacity this venue can accomodate.")]
         [Display(Name = "Capacity")]
         public int? Capacity { get; set; }
-        [Required]
+        
         public string? ImageUrl { get; set; }
         [Required]
         public bool IsAvailable { get; set; }
-        [Required]
+       
         public ICollection<Booking>? Bookings { get; set; }
     }
 }

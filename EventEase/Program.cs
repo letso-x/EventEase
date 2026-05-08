@@ -1,4 +1,6 @@
 using EventEase.Data;
+using EventEase.Services;
+using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register Azure Storage Service
+string azureStorageConnectionString = builder.Configuration.GetValue<string>("AzureStorage:ConnectionString");
+if (!string.IsNullOrEmpty(azureStorageConnectionString))
+{
+    builder.Services.AddSingleton(x => new BlobServiceClient(azureStorageConnectionString));
+    builder.Services.AddScoped<IAzureStorageService, AzureStorageService>();
+}
 
 var app = builder.Build();
 

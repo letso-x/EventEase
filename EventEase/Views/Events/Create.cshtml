@@ -4,55 +4,112 @@
     ViewData["Title"] = "Create Event";
 }
 
-<h2>Create Event</h2>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-4">
+                <i class="fas fa-plus-circle"></i> Create New Event
+            </h2>
 
-<form asp-action="Create">
-    <div class="form-group">
-        <label asp-for="EventName"></label>
-        <input asp-for="EventName" class="form-control" />
-        <span asp-validation-for="EventName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="StartDate"></label>
-        <input asp-for="StartDate" class="form-control" type="datetime-local"/>
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="EndDate"></label>
-        <input asp-for="EndDate" class="form-control" type="datetime-local" />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-    </div>
-    <div class="form-group">
-        <label asp-for="ImageUrl"></label>
-        <input asp-for="ImageUrl" class="form-control" id="imageUrlInput" oninput="previewImage(this.value)" />
-    </div>
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div class="form-group mb-3">
+                    <label asp-for="EventName" class="form-label"></label>
+                    <input asp-for="EventName" class="form-control" placeholder="Enter event name" />
+                    <span asp-validation-for="EventName" class="text-danger"></span>
+                </div>
 
-    <div class="form-group" id="previewBox" style="display:none; margin-top:10px;">
-        <label>Preview</label><br />
-        <img id="imagePreview" src="" style="width:200px; height:140px; object-fit:cover;" />
-    </div>
+                <div class="form-group mb-3">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" class="form-control" type="datetime-local"/>
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
 
-    <input type="submit" value="Create" class="btn btn-primary" />
-    <a asp-action="Index">Back to List</a>
-</form>
+                <div class="form-group mb-3">
+                    <label asp-for="EndDate" class="form-label"></label>
+                    <input asp-for="EndDate" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter event description"></textarea>
+                </div>
+
+                <!-- Image URL Option -->
+                <div class="form-group mb-3">
+                    <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                    <input asp-for="ImageUrl" 
+                           class="form-control" 
+                           id="imageUrlInput" 
+                           placeholder="Paste any image URL here..."
+                           oninput="previewFromUrl(this.value)" />
+                    <small class="form-text text-muted">Or upload a file below to store in Azure</small>
+                </div>
+
+                <!-- File Upload Option -->
+                <div class="form-group mb-3">
+                    <label for="imageFile" class="form-label">Upload Image (Optional)</label>
+                    <input type="file" 
+                           name="imageFile" 
+                           id="imageFile" 
+                           class="form-control" 
+                           accept="image/*"
+                           onchange="previewFromFile(this)" />
+                    <small class="form-text text-muted">Max file size: 10MB. Supported formats: JPG, PNG, GIF, WebP</small>
+                </div>
+
+                <!-- Image Preview -->
+                <div class="form-group mb-3" id="previewBox" style="display:none;">
+                    <label class="form-label">Image Preview</label><br />
+                    <img id="imagePreview" 
+                         src="" 
+                         class="img-thumbnail rounded" 
+                         style="width:300px; height:200px; object-fit:cover;" 
+                         alt="Preview" />
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Create Event
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
-        function previewImage(url) {
+        function previewFromUrl(url) {
             if (url) {
                 document.getElementById('imagePreview').src = url;
                 document.getElementById('previewBox').style.display = 'block';
+                // Clear file input if URL is provided
+                document.getElementById('imageFile').value = '';
             } else {
                 document.getElementById('previewBox').style.display = 'none';
             }
         }
+
+        function previewFromFile(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('previewBox').style.display = 'block';
+                    // Clear URL input if file is selected
+                    document.getElementById('imageUrlInput').value = '';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         window.onload = function () {
             var url = document.getElementById('imageUrlInput').value;
-            if (url) previewImage(url);
+            if (url) previewFromUrl(url);
         }
     </script>
 }
